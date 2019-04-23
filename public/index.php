@@ -1,5 +1,5 @@
 <?php
-require 'E:\servak\OSPanel\domains\diplo.me\include.php';?>
+require 'E:\servak\OSPanel\domains\diplo.me\auth\login.php';?>
 <head>
 <title>Unautorized</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -30,7 +30,7 @@ require 'E:\servak\OSPanel\domains\diplo.me\include.php';?>
                             </div>
                             <div class="form-group">
                                 <label for="remember-me" class="text-info"><span>Remember me</span> <span><input id="remember-me" name="remember-me" type="checkbox"></span></label><br>
-                                <input type="submit" name="submit" class="btn btn-info btn-md" value="submit">
+                                <input type="submit" name="do_login" class="btn btn-info btn-md" value="">
                             </div>
                             <div id="register-link" class="text-right">
                                 <a href="/register-form.php" class="text-info">Register here</a>
