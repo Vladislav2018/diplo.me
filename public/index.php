@@ -1,5 +1,36 @@
 <?php
-require 'E:\servak\OSPanel\domains\diplo.me\auth\login.php';?>
+require 'E:\servak\OSPanel\domains\diplo.me\include.php';
+$data = $_POST;
+if ( isset($data['do_login']) )
+{
+
+    $user = R::findOne('users', 'login = ?', array($data['login']));
+    if ( $user )
+    {
+        //логин существует
+        if ( password_verify($data['password'], $user->password) )
+        {
+            //если пароль совпадает, то нужно авторизовать пользователя
+            $_SESSION['logged_user'] = $user;
+            echo '<div style="color:dreen;">Вы авторизованы!<br> 
+            Можете перейти на <a href="/">главную</a> страницу.</div><hr>';
+        }else
+        {
+            $errors[] = 'Неверно введен пароль!';
+        }
+ 
+    }else
+    {
+        $errors[] = 'Пользователь с таким логином не найден!';
+    }
+     
+    if ( ! empty($errors) )
+    {
+        //выводим ошибки авторизации
+        echo '<div id="errors" style="color:red;">' .array_shift($errors). '</div><hr>';
+    }
+}
+?>
 <head>
 <title>Unautorized</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -14,7 +45,7 @@ require 'E:\servak\OSPanel\domains\diplo.me\auth\login.php';?>
             <div id="login-row" class="row justify-content-center align-items-center">
                 <div id="login-column" class="col-md-6">
                     <div id="login-box" class="col-md-12">
-                        <form id="login-form" class="form" action="login.php" method="post">
+                        <form id="login-form" class="form" action="index.php" method="post">
                             <h3 class="text-center text-info">Login</h3>
                             <div class="form-group">
                                 <label for="username" class="text-info">Login:</label><br>
@@ -30,7 +61,7 @@ require 'E:\servak\OSPanel\domains\diplo.me\auth\login.php';?>
                             </div>
                             <div class="form-group">
                                 <label for="remember-me" class="text-info"><span>Remember me</span> <span><input id="remember-me" name="remember-me" type="checkbox"></span></label><br>
-                                <input type="submit" name="do_login" class="btn btn-info btn-md" value="">
+                                <input type="submit" name="do_login" class="btn btn-info btn-md" value="Autorize me!">
                             </div>
                             <div id="register-link" class="text-right">
                                 <a href="/register-form.php" class="text-info">Register here</a>
@@ -42,3 +73,6 @@ require 'E:\servak\OSPanel\domains\diplo.me\auth\login.php';?>
         </div>
     </div>
 </body>
+
+<?php
+
