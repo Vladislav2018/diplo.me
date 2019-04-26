@@ -1,12 +1,14 @@
 <?php
-namespace Admins;
+namespace Amdins;
 
 use Accounts\Account;
 
-require 'E:\servak\OSPanel\domains\diplo.me\include.php';
+require '../accounts.php';
+
 class Admin extends Account
 {
 
 }
-//тут будет род. класс
 ?>
+
+<!------ Include the above in your HEAD tag ---------->

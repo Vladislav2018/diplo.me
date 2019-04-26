@@ -3,10 +3,11 @@ namespace Managers;
 
 use Accounts\Account;
 
-require 'E:\servak\OSPanel\domains\diplo.me\include.php';
+require '../accounts.php';
+
 class Manager extends Account
 {
-
+    
 }
-//тут будет род. класс
+
 ?>
