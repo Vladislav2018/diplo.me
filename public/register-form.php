@@ -1,5 +1,6 @@
 <?php
 require 'E:\servak\OSPanel\domains\diplo.me\include.php';
+include_once '../helper.php';
   $data = $_POST;
   
 //если кликнули на button
@@ -22,7 +23,7 @@ if ( isset($data['do_signup']) )
     {
         $errors[] = 'Введите пароль';
     }
-    if(strlen(trim( $data['password']))<10)
+    if(strlen(trim( $data['password']))<4)
     {
         $errors[] = 'Пароль слишком короткий';
     }
@@ -52,8 +53,16 @@ if ( isset($data['do_signup']) )
         $user->email = $data['email'];
         $user->password = password_hash($data['password'], PASSWORD_DEFAULT); 
         R::store($user);
-        $_SESSION = $data['login'];
+        $current_user = R::findOne('users', 'WHERE name = ?', array($data['login']));
+        $_SESSION['user']=$current_user;
+        $_SESSION['user_id'] = $current_user->id;
+        unset($_SESSION['user']);
+        b_dump($_SESSION);
+        
+
         echo '<div style="color:dreen;">Вы успешно зарегистрированы!</div><hr>';
+        header('Location: confirm.php');
+        exit();
     }else
     {
         echo '<div id="errors" style="color:red;">' .array_shift($errors). '</div><hr>';
