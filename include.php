@@ -1,5 +1,6 @@
 <?php
 require 'libs/rb-mysql.php';
+require 'vendor/composer/autoload_psr4.php';
 R::setup( 
 'mysql:host=127.0.0.1;
 dbname=work_pr',
@@ -9,6 +10,8 @@ if(!R::testConnection())
     exit('some error with db connection or file structure');
 }
 R::fancyDebug( TRUE );
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start();
 ?>
 <head>

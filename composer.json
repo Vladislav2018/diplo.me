@@ -1,0 +1,19 @@
+{
+    "name": "diplom/composer",
+    "description": "dependence between classes",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vladislav Blazhkiv",
+            "email": "kara.bos@mail.ru"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "RedBeanPHP\\":"libs/rb-mysql.php"
+        }
+    }
+}

@@ -3,12 +3,16 @@
    namespace Accounts;
    require 'E:\servak\OSPanel\domains\diplo.me\include.php';
    include_once '../helper.php';
-   use RedBeanPHP\R;
+   // spl_autoload_register(function ($class) 
+   // { 
+   //    require _DIR_ . '/' .str_replace('\\', '/', $class) . '.php'; 
+   // });
+   use RedBeanPHP;
    class Account
    {
       public static function getEmployee()
       {
-         $employee = R::FindOne('employees', 'WHERE user_id = ?', array($_SESSION['user_id']));
+         $employee = RedBeanPHP\R::FindOne('employees', 'WHERE user_id = ?', array($_SESSION['user_id']));
          b_dump($employee);
          return $employee;
       }

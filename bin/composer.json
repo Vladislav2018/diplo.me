@@ -1,6 +1,0 @@
-{
-    "require": {
-      "maximebf/debugbar": "1.*",
-      "php-console/php-console": "^3.1"
-    }
-  }
