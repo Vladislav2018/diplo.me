@@ -57,11 +57,13 @@ if ( isset($data['do_signup']) )
         $_SESSION['user']=$current_user;
         $_SESSION['user_id'] = $current_user->id;
         unset($_SESSION['user']);
-        b_dump($_SESSION);
+        //b_dump($_SESSION);
         
 
         echo '<div style="color:dreen;">Вы успешно зарегистрированы!</div><hr>';
-        header('Location: confirm.php');
+        ?><script type="text/javascript">
+        location = 'accounts.php';
+    </script><?php
         exit();
     }else
     {

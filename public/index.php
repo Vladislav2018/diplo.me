@@ -4,16 +4,25 @@ $data = $_POST;
 if ( isset($data['do_login']) )
 {
 
-    $user = R::findOne('users', 'login = ?', array($data['login']));
+    $user = R::findOne('users', 'name = ?', array($data['login']));
     if ( $user )
     {
         //логин существует
         if ( password_verify($data['password'], $user->password) )
         {
             //если пароль совпадает, то нужно авторизовать пользователя
-            $_SESSION['logged_user'] = $user;
-            echo '<div style="color:dreen;">Вы авторизованы!<br> 
-            Можете перейти на <a href="/">главную</a> страницу.</div><hr>';
+            $current_user = R::findOne('users', 'WHERE name = ?', array($data['login']));
+            $_SESSION['user']=$current_user;
+            $_SESSION['user_id'] = $current_user->id;
+            unset($_SESSION['user']);
+            unset($_SESSION['logged_user']);
+            //print_r($_SESSION['user_id']);
+            echo '<div style="color:dreen;">Вы авторизованы!<br>'; 
+            //header('Location: accounts.php', true, 301);
+            ?><script type="text/javascript">
+                location = 'accounts.php';
+            </script><?php
+            exit();
         }else
         {
             $errors[] = 'Неверно введен пароль!';
@@ -33,10 +42,6 @@ if ( isset($data['do_login']) )
 ?>
 <head>
 <title>Unautorized</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 </head>
 <body>
     
@@ -58,7 +63,7 @@ if ( isset($data['do_login']) )
                             </div>
                             <div class="form-group">
                                 <label for="password" class="text-info">Password:</label><br>
-                                <input type="text" name="password" value="<?php echo @$data['password'];?>" class="form-control">
+                                <input type="password" name="password" value="<?php echo @$data['password'];?>" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="remember-me" class="text-info"><span>Remember me</span> <span><input id="remember-me" name="remember-me" type="checkbox"></span></label><br>

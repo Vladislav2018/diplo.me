@@ -8,6 +8,7 @@ if(!R::testConnection())
 {
     exit('some error with db connection or file structure');
 }
+R::fancyDebug( TRUE );
 session_start();
 ?>
 <head>
