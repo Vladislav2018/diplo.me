@@ -1,41 +1,32 @@
 <?php
-
-   namespace Accounts;
-   require 'E:\servak\OSPanel\domains\diplo.me\include.php';
+   require '../include.php';//file with coonection to RedBean
    include_once '../helper.php';
-   // spl_autoload_register(function ($class) 
-   // { 
-   //    require _DIR_ . '/' .str_replace('\\', '/', $class) . '.php'; 
-   // });
-   use RedBeanPHP;
-   class Account
-   {
-      public static function getEmployee()
+      function getEmployee()
       {
-         $employee = RedBeanPHP\R::FindOne('employees', 'WHERE user_id = ?', array($_SESSION['user_id']));
+         $employee = R::FindOne('employees', 'WHERE user_id = ?', array($_SESSION['user_id']));
          b_dump($employee);
          return $employee;
       }
-      public static function getVerify()
+      function getVerify()
       {
-         if(empty(self::getEmployee()))
+         if(empty(getEmployee()))
          {
             return false;
          }
          else
          return true;  
       }
-      public static function getUserRole($c_user_role)
+      function getUserRole($c_user_role)
       {
-         if(self::getVerify(true))
+         if(getVerify(true))
          {
-            $c_user_role = self::getEmployee()['roles'];
+            $c_user_role = getEmployee()['roles'];
             return $c_user_role;
          }   
       }
-      public static function redirectUser()
+      function redirectUser()
       {
-         if(self::getVerify(false))
+         if(getVerify(false))
          {
             ?><script type="text/javascript">
             location = 'confirm.php';
@@ -44,21 +35,21 @@
          }
          else
          {
-            if(self::getUserRole('worker'))
+            if(getUserRole('worker'))
             {
                ?><script type="text/javascript">
                location = 'accTypes/worker.php';
                </script><?php
                exit();
             }
-            elseif(self::getUserRole('manager'))
+            elseif(getUserRole('manager'))
             {
                ?><script type="text/javascript">
                location = 'accTypes/worker.php';
                </script><?php
                exit();
             }
-            elseif(self::getUserRole('admin'))
+            elseif(getUserRole('admin'))
             {
                ?><script type="text/javascript">
                location = 'accTypes/admin.php';
@@ -66,10 +57,8 @@
                exit();
             }
          }
-      }
-   }      
+      }     
    b_dump($_SESSION);
-   Account::redirectUser();
    ?>
 
 
