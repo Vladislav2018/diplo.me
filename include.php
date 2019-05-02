@@ -1,4 +1,6 @@
 <?php
+use RedBeanPHP\Util\DispenseHelper;
+
 require 'libs/rb-mysql.php';
 require 'vendor/composer/autoload_psr4.php';
 R::setup( 
@@ -9,6 +11,12 @@ if(!R::testConnection())
 {
     exit('some error with db connection or file structure');
 }
+DispenseHelper::setEnforceNamingPolicy(false);
+//m.b. need to cut and pastle in helper
+R::ext('normdispense', function($table_name)
+{
+    return R::getRedBean()->dispense($table_name);
+});
 R::fancyDebug( TRUE );
 error_reporting(E_ALL);
 ini_set('display_errors', 1);

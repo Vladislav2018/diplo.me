@@ -2,7 +2,7 @@
 require '../include.php';
 include_once '../helper.php';
 $data = $_POST;
-b_dump($_SESSION['user_id']);
+//b_dump($_SESSION['user_id']);
 if ( isset($data['submit']) )
 {
     $employee = R::dispense('employees');
@@ -13,6 +13,16 @@ if ( isset($data['submit']) )
         if(!empty($data['head_id']))
         $employee->head_id = $data['head_id'];
     R::store($employee);
+    $corpmail = R::FindOne('users', 'WHERE id = ?', array($_SESSION['user_id']));
+    $employee= R::FindOne('employees', 'WHERE user_id = ?', array($_SESSION['user_id']));
+    $_SESSION['employees_id']= $employee['id'];
+    $e_cont = R::dispense('employeekonts');
+    $e_cont->employee_id = $_SESSION['employees_id'];
+    $e_cont->corp_email = $corpmail['email'];
+    R::store($e_cont);
+    $e_org = R::dispense('employeeorgs');
+    $e_org->employee_id = $_SESSION['employees_id'];
+    R::store($e_org);
     ?><script type="text/javascript">
     location = 'accounts.php';
     </script><?php

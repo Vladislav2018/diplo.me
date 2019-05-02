@@ -1,4 +1,14 @@
+<?php
+   //require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
+   include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+   $employee= R::FindOne('employees', 'WHERE user_id = ?', array($_SESSION['user_id']));
+   $user = R::FindOne('users', 'WHERE id = ?', array($_SESSION['user_id']));
+   b_dump($employee['id']);
+   $org = R::FindOne('employeeorgs', 'WHERE employee_id = ?', array($employee['id']));
+   $cont = R::FindOne('employeekonts', 'WHERE employee_id = ?', array($employee['id']));
 
+   //b_dump($_SESSION);
+?>
          <div class="col-md-9">
             <div class="card">
                <div class="container mt-3">
@@ -6,7 +16,7 @@
                   <div class="card-body">
                      <div class="row">
                         <div class="col-md-12">
-                           <h4>Профиль: Фамилия Имя Отчество *(Вы)*</h4>
+                           <h4>Профиль: <?php echo($employee['first_name'].' '.$employee['last_name'].' '.$employee['patronymic'] )?> *(Вы)*</h4>
                            <hr>
                         </div>
                      </div>
@@ -29,34 +39,42 @@
                               <div class="form-group row">
                                  <label for="username" class="col-4 col-form-label">Логин</label> 
                                  <div class="col-4">
-                                    <input id="username" name="username" placeholder="Username" class="form-control here" type="text">
+                                    <input id="username" name="username" placeholder="<?php echo($user['name'])?>" class="form-control here" type="text">
                                  </div>
                               </div>
                               <div class="form-group row">
                                  <label for="name" class="col-4 col-form-label">Имя</label> 
                                  <div class="col-4">
-                                    <input id="name" name="name" placeholder="First Name" class="form-control here" type="text">
+                                    <input id="name" name="name" placeholder="<?php echo($employee['first_name'])?>" class="form-control here" type="text">
                                  </div>
                               </div>
                               <div class="form-group row">
                                  <label for="lastname" class="col-4 col-form-label">Фамилия</label> 
                                  <div class="col-4">
-                                    <input id="lastname" name="lastname" placeholder="Last Name" class="form-control here" type="text">
+                                    <input id="lastname" name="lastname" placeholder="<?php echo($employee['last_name'])?>" class="form-control here" type="text">
                                  </div>
                               </div>
                               <div class="form-group row">
                                  <label for="Patronymic" class="col-4 col-form-label">Отчество</label> 
                                  <div class="col-4">
-                                    <input id="Patronymic" name="Patronymic" placeholder="Patronymic" class="form-control here" type="text">
+                                    <input id="Patronymic" name="Patronymic" placeholder="<?php echo($employee['patronymic'])?>" class="form-control here" type="text">
                                  </div>
                               </div>
                               <div class="form-group row">
                                  <label for="select" class="col-4 col-form-label">Ваша Роль</label> 
-                                 <p>*Роль*</p>
+                                 <p><?echo($_SESSION['role'])?></p>
                               </div>
                               <div class="form-group row">
                                  <label for="select" class="col-4 col-form-label">Руководитель</label> 
-                                 <p>*Руководитель*</p>
+                                 <p>
+                                 <?php 
+                                 if(!empty($employee['head_id'])){
+                                    echo($employee['head_id']);
+                                 }
+                                 else
+                                 {
+                                    echo('руководитель не задан');
+                                 } ?></p>
                               </div>
                               <div class="form-group row">
                                  <div class="offset-4 col-8">
