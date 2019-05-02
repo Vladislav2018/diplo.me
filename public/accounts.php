@@ -1,30 +1,29 @@
 <?php
-   require '../include.php';//file with coonection to RedBean
-   include_once '../helper.php';
+   require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
+   include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
       function redirectUser()
       {
          $employee = R::FindOne('employees', 'WHERE user_id = ?', array($_SESSION['user_id']));
-         b_dump($employee);
+         //b_dump($employee);
          if(!empty($employee))
          {
             $c_user_role = $employee['roles'];
             $_SESSION['role'] = $c_user_role;
-            b_dump($c_user_role);
-            if($c_user_role['roles'] == 'worker')
+            if($_SESSION['role'] == 'worker')
             {
                ?><script type="text/javascript">
                location = 'accTypes/worker.php';
                </script><?php
                exit();
             }
-            elseif($c_user_role['roles'] == 'manager')
+            elseif($_SESSION['role'] == 'manager')
             {
                ?><script type="text/javascript">
                location = 'accTypes/worker.php';
                </script><?php
                exit();
             }
-            elseif($c_user_role['roles'] == 'admin')
+            elseif($_SESSION['role'] == 'admin')
             {
                ?><script type="text/javascript">
                location = 'accTypes/admin.php';
