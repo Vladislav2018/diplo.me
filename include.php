@@ -17,7 +17,7 @@ R::ext('normdispense', function($table_name)
 {
     return R::getRedBean()->dispense($table_name);
 });
-R::fancyDebug( TRUE );
+//R::fancyDebug( TRUE );
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 session_start();
