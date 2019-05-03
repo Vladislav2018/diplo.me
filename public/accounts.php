@@ -9,27 +9,10 @@
          {
             $c_user_role = $employee['roles'];
             $_SESSION['role'] = $c_user_role;
-            if($_SESSION['role'] == 'worker')
-            {
-               ?><script type="text/javascript">
-               location = 'accTypes/worker.php';
-               </script><?php
-               exit();
-            }
-            elseif($_SESSION['role'] == 'manager')
-            {
-               ?><script type="text/javascript">
-               location = 'accTypes/worker.php';
-               </script><?php
-               exit();
-            }
-            elseif($_SESSION['role'] == 'admin')
-            {
-               ?><script type="text/javascript">
-               location = 'accTypes/admin.php';
-               </script><?php
-               exit();
-            }
+            ?><script type="text/javascript">
+            location = 'profile.php';
+            </script><?php
+            exit();
          }
          else
          {

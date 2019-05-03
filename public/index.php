@@ -1,9 +1,10 @@
 <?php
 require 'E:\servak\OSPanel\domains\diplo.me\include.php';
+include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+//b_dump($_SESSION);
 $data = $_POST;
 if ( isset($data['do_login']) )
 {
-
     $user = R::findOne('users', 'name = ?', array($data['login']));
     if ( $user )
     {
