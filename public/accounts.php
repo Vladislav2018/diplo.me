@@ -6,13 +6,15 @@
          $employee = R::FindOne('employees', 'WHERE user_id = ?', array($_SESSION['user_id']));
          //b_dump($employee);
          if(!empty($employee))
-         {
-            $c_user_role = $employee['roles'];
-            $_SESSION['role'] = $c_user_role;
+         {         
+            unset($_SESSION['employee_id']);
+            //b_dump($employee);
+            $_SESSION['employee'] = $employee;
+            b_dump($_SESSION);
             ?><script type="text/javascript">
             location = 'profile.php';
             </script><?php
-            exit();
+            //exit();
          }
          else
          {
@@ -22,7 +24,6 @@
             exit();
          }
       }     
-   b_dump($_SESSION);
    redirectUser();
    ?>
 

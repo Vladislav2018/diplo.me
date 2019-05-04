@@ -1,8 +1,8 @@
 <?php
    //require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
    include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
-   $employee= R::FindOne('employees', 'WHERE user_id = ?', array($_SESSION['user_id']));
-   $user = R::FindOne('users', 'WHERE id = ?', array($_SESSION['user_id']));
+   $employee= R::FindOne('employees', 'WHERE user_id = ?', array($_SESSION['employee']['user_id']));
+   $user = R::FindOne('users', 'WHERE id = ?', array($_SESSION['employee']['user_id']));
    //b_dump($employee['id']);
    $org = R::FindOne('employeeorgs', 'WHERE employee_id = ?', array($employee['id']));
    $contact = R::FindOne('employeekonts', 'WHERE employee_id = ?', array($employee['id']));
@@ -61,7 +61,7 @@
          <div class="card-body">
             <div class="row">
                <div class="col-md-12">
-                  <h4>Профиль: <?php echo($employee['first_name'].' '.$employee['last_name'].' '.$employee['patronymic'] )?> *(Вы)*</h4>
+                  <h4>Профиль: <?php echo($employee['first_name'].' '.$employee['last_name'].' '.$employee['patronymic'] )?></h4>
                   <br>
                </div>
             </div>
@@ -107,7 +107,7 @@
                      </div>
                      <div class="form-group row">
                         <label for="role" class="col-4 col-form-label">Ваша Роль</label> 
-                        <p><?echo($_SESSION['role'])?></p>
+                        <p><?echo($_SESSION['employee']['roles'])?></p>
                      </div>
                      <div class="form-group row">
                         <label for="head" class="col-4 col-form-label">Руководитель</label> 

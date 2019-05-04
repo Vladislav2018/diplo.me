@@ -1,6 +1,7 @@
 <?php
 require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
 include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+//b_dump($_SESSION);
 ?>
 <body>
 <div class="navbar">
@@ -19,12 +20,12 @@ include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
                <a href="<?php echo("group.php"); ?>" class="list-group-item list-group-item-action">Группа</a>
                <a href="<?php echo("my_stat.php"); ?>" class="list-group-item list-group-item-action">Моя статистика</a>
                <?php 
-               if($_SESSION['role'] != 'worker'):
+               if($_SESSION['employee']['roles'] != 'worker'):
                ?>
                 <a href="<?php echo("group_stat.php"); ?>" class="list-group-item list-group-item-action">Статистика группы</a>
                <?php endif;?>
                 <?php 
-               if($_SESSION['role'] == 'admin'):
+               if($_SESSION['employee']['roles'] == 'admin'):
                ?>
                <a href="<?php echo("common_stat.php"); ?>" class="list-group-item list-group-item-action">Общая статистика</a>
                <a href="<?php echo("all_profiles.php"); ?>" class="list-group-item list-group-item-action">Все профили</a>

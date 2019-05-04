@@ -2,7 +2,7 @@
 require '../include.php';
 include_once '../helper.php';
 $data = $_POST;
-//b_dump($_SESSION['user_id']);
+b_dump($_SESSION);
 if ( isset($data['submit']) )
 {
     $employee = R::dispense('employees');

@@ -16,7 +16,6 @@ if ( isset($data['do_login']) )
             $_SESSION['user']=$current_user;
             $_SESSION['user_id'] = $current_user->id;
             unset($_SESSION['user']);
-            unset($_SESSION['logged_user']);
             //print_r($_SESSION['user_id']);
             echo '<div style="color:dreen;">Вы авторизованы!<br>'; 
             //header('Location: accounts.php', true, 301);
