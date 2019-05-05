@@ -9,14 +9,11 @@
         //b_dump($my_subordinates);
         if(isset($_POST['create_group']))
         {
-            if(isset($_POST['grouped']))
-            {
-                foreach($_POST['grouped'] as $selected)
-                {
-                    echo 'create group';
-                    b_dump($selected);
-                }
-            }
+           b_dump($_POST);
+            $new_group = R::dispense('groups');
+            $new_group->head_id = $_SESSION['employee']['head_id'];
+            $new_group->name = $_POST['group_name'];
+
         }
    }
 
@@ -55,36 +52,34 @@
          <table class="table table-dark table-bordered">
             <thead>
             <tr >
-            <div class="row">
-                <th >Добавить</th>
+                <th >Add</th>
                 <th >id</th>
-                <th >Имя</th>
-                <th >Фамилия</th>
-                <th >Группа</th>
-            </div>
+                <th >first_name</th>
+                <th >last_name</th>
+                <th >Groups</th>
             </tr>
             </thead>
             <tbody>
                 <?php foreach($my_subordinates as $my_subordinate):?>
                     <tr>
-                        <td ><input type="checkbox" name="grouped" value="<?php $my_subordinate['id']?>"> в группу</td>
+                        <td ><input type="checkbox" name="grouped[]" value="<?php echo $my_subordinate['id']?>">to group</td>
                         <td ><?php echo $my_subordinate['id'] ?></td>
                         <td ><?php echo $my_subordinate['first_name'] ?></td>
                         <td ><?php echo $my_subordinate['last_name'] ?></td>
-                        <td ><?php echo $my_subordinate['group_id'] ?></td>
+                        <td ><?php  ?></td>
                     </tr>
                   <?php endforeach;?>
             </tbody>
         </table>
             <div class="form-group row">
-               <label for="name" class="col-4 col-form-label">Название группы</label> 
+               <label for="name" class="col-4 col-form-label">Group name</label> 
                <div class="col-4">
-                  <input id="group_name" name="group_name" pattern="({2,255})?" value="" class="form-control here" type="text">
+                  <input id="group_name" name="group_name" pattern="{2,255}" value="" class="form-control here" type="text" autofocus required>
                </div>
             </div>
             <div class="form-group row">
                 <div class="offset-4 col-8">
-                    <button name="create_group" type="submit" class="btn btn-primary">Создать</button>
+                    <button name="create_group" type="submit" class="btn btn-primary">Create</button>
                 </div>
             </div>
          </form>
