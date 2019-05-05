@@ -59,7 +59,7 @@
                 <th >Groups</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody style ="height: 500px; overflow: scroll;">
                 <?php foreach($my_subordinates as $my_subordinate):?>
                     <tr>
                         <td ><input type="checkbox" name="grouped[]" value="<?php echo $my_subordinate['id']?>">to group</td>

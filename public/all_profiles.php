@@ -4,14 +4,13 @@
    if(isset($_POST['find']))
    {
        $employees = R::find('employees' ,'WHERE '.$_POST['findby'].'= ?', array($_POST['sought-for']));
+       $users = array();
+       $employee_konts = array();
+       $employee_orgs = array();
+        $i = 0;
        foreach($employees as $employee)
        {
-            $user = R::findOne('users', 'WHERE id = ?', array($employee['user_id']));
-            //b_dump($user);
-            $employee_kont = R::findOne('employeekonts', 'WHERE employee_id = ?', array($employee['id']));
-            //b_dump($employee_kont);
-            $employee_org = R::findOne('employeeorgs', 'WHERE employee_id = ?', array($employee['id']));
-            //b_dump($employee_org);
+
        }
 
        //$users = R::findAll('users' , 'WHERE id = ?', array());
@@ -83,19 +82,21 @@
                     <th >email</th>
                 </tr>
                 </thead>
-                <tbody>
-                    <?php ?>
+                <tbody style ="height: 500px; overflow: scroll;">
+                    <?php foreach($employees as $employee):?>
                         <tr>
-                            <td ><input type="checkbox" name="deletes[]" value="<?php ?>"> select</td>
-                            <td ><?php  ?></td>
-                            <td ><?php ?></td>
-                            <td ><?php  ?></td>
+                        <?php $users[$i] = R::findOne('users', 'WHERE id = ?', array($employee['user_id'])); ?>
+                            <td ><input type="checkbox" name="deletes[]" value="<?php echo $users[$i]['id']; ?>"></td>
+                            <td ><?php echo $users[$i]['id']; ?></td>
+                            <td ><?php echo $users[$i]['name']; ?></td>
+                            <td ><?php echo $users[$i]['email']; ?></td>
                         </tr>
-                    <?php ?>
+               <?php endforeach;?>
                 </tbody>
                 </table>
                 <table class="table table-dark table-bordered">
                 <thead>
+                    
                 <tr >
                     <th >id</th>
                     <th >role</th>
@@ -105,22 +106,35 @@
                     <th >head_id</th>
                 </tr>
                 </thead>
-                <tbody>
-                    <?php ?>
+                <tbody style ="height: 500px; overflow: scroll;">
+                <?php foreach($employees as $employee):?>
                         <tr>
-                            <td ></td>
-                            <td ><?php  ?></td>
-                            <td ><?php  ?></td>
-                            <td ><?php ?></td>
-                            <td ><?php  ?></td>
+                            <td ><?php echo $employee['id']; ?></td>
+                            <td ><?php echo $employee['roles']; ?></td>
+                            <td ><?php echo $employee['first_name']; ?></td>
+                            <td ><?php echo $employee['last_name']; ?></td>
+                            <td ><?php echo $employee['patronymic']; ?></td>
+                            <td ><?php echo $employee['head_id']; ?></td>
                         </tr>
-                    <?php ?>
+                        <?php endforeach;?>
                 </tbody>
                 </table>
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Other info about: <?php ?></h5>
-                        <p class="card-text"></p>
+                <div class="card" >
+                <h5 class="card-title" >Other info about found staff</h5>
+                    <div class="card-body" style ="height: 500px; overflow: scroll;">
+                        
+                        <?php foreach($employees as $employee):?>
+
+                        <?php $employee_konts[$i] = R::findOne('employeekonts', 'WHERE employee_id = ?', array($employee['id']));
+                        $employee_konts[$i] = $employee_konts[$i]->export();
+                        $employee_orgs[$i] = R::findOne('employeeorgs', 'WHERE employee_id = ?', array($employee['id']));
+                        $employee_orgs[$i] = $employee_orgs[$i]->export();
+                        ?>
+                        
+                        <p class="card-text"><?php echo 'Данные сотрудника: '.$employee['first_name'].' '.$employee['last_name'].' '.$employee['patronymic']?></p>
+                        <?php b_dump($employee_konts[$i]); ?>
+                        <?php b_dump($employee_orgs[$i]); ?>
+                        <?php endforeach;?>
                     </div>
                 </div>
                 <div class="offset-4 col-8">
