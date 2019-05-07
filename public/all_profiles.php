@@ -8,13 +8,13 @@
        $employee_konts = array();
        $employee_orgs = array();
         $i = 0;
-       foreach($employees as $employee)
-       {
-
-       }
 
        //$users = R::findAll('users' , 'WHERE id = ?', array());
        //b_dump($_POST);
+   }
+   if(isset($_POST['delete']))
+   {
+       //b_dump();
    }
 ?>
 <body>
@@ -138,7 +138,7 @@
                     </div>
                 </div>
                 <div class="offset-4 col-8">
-                            <button name="delete" type="submit" class="btn btn-danger">Удалить</button>
+                            <button name="delete" type="submit" class="btn btn-danger">Удалить</button> отмеченных
                         </div>
             </form>
             
