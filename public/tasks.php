@@ -1,6 +1,9 @@
 <?php
    require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
    include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+   $ids = R::getCol('SELECT * FROM employees');
+   $groups = R::getCol('SELECT groupname FROM `groups`');
+   //b_dump($groups);
 ?>
 <body>
 <div class="navbar">
@@ -33,47 +36,68 @@
          </div>
         <div class="col-md-9">
             <div class="well well-sm">
-                <form class="form-horizontal" method="post">
+                <form class="form-horizontal" action="<?php echo $_SERVER['PHP_SELF']; ?> method="post">
                     <fieldset>
                         <legend class="text-center header">Give Tasks</legend>
 
                         <div class="form-group">
                             <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-user bigicon"></i></span>
                             <div class="col-md-8">
-                                <input id="fname" name="name" type="text" placeholder="First Name" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-user bigicon"></i></span>
-                            <div class="col-md-8">
-                                <input id="lname" name="name" type="text" placeholder="Last Name" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-envelope-o bigicon"></i></span>
-                            <div class="col-md-8">
-                                <input id="email" name="email" type="text" placeholder="Email Address" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-phone-square bigicon"></i></span>
-                            <div class="col-md-8">
-                                <input id="phone" name="phone" type="text" placeholder="Phone" class="form-control">
+                                <input id="tname" name="taskname" type="text" placeholder="Название задачи" class="form-control">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-pencil-square-o bigicon"></i></span>
                             <div class="col-md-8">
-                                <textarea class="form-control" id="message" name="message" placeholder="" rows="7"></textarea>
+                                <textarea class="form-control" id="message" name="message" placeholder="Опишите задание в подробностях" rows="5"></textarea>
                             </div>
                         </div>
-
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                            группа, для которого будет задача:
+                                <select name="group"class="form-control">
+                                <option name='group[]' value=""></option>
+                                    <?php foreach($groups as $group): ?>
+                                    <option name='group[]' value="<?php echo $group; ?>"><?php echo $group; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-md-3">                           
+                            id сотрудника, для которой будет задача:
+                                <select name="empl_id"class="form-control">
+                                <option name='empl_id[]' value=""></option>
+                                    <?php foreach($ids as $id): ?>
+                                    <option name='empl_id[]' value="<?php echo $id; ?>"><?php echo $id; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
                         <div class="form-group">
+                            
+                            <div class="col-md-8">
+                                <label for="tags">Тэги задачи</label>
+                                <input id="tags" name="tags" type="text" placeholder="тэг1, тэг2, ..." class="form-control">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                            <label for="deadline" class="col-md-4 col-form-label">Срок выполнения:</label>
+                            <input type="date" id="birth" name="deadline" value="">
+                        </div>
+                                <div class="col-md-3">
+                                <label for="deadline" class="col-md-3 col-form-label">Приоритетность:</label>
+                                <select name="priority"class="form-control">
+                                <option name='priority[]' value="extra">Дополнительно</option>
+                                <option name='priority[]' value="main">Главное</option>
+                                <option name='priority[]' value="primary">Срочное</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <div class="col-md-12 text-center">
-                                <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                                <button type="submit" class="btn btn-primary btn-lg">Создать</button>
                             </div>
                         </div>
                     </fieldset>
