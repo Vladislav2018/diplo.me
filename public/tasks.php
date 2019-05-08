@@ -3,7 +3,19 @@
    include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
    $ids = R::getCol('SELECT * FROM employees');
    $groups = R::getCol('SELECT groupname FROM `groups`');
-   //b_dump($groups);
+   //b_dump($_SESSION);
+   if(isset($_POST['create_tasks']))
+   {
+        $task = R::dispense('tasks');
+        $task->task_name = $_POST['taskname'];
+        $task->task_description= $_POST['decription'];
+        $task->employee_id = $_POST['empl_id'];
+        $task->manager_id = $_SESSION['employee']['id'];
+        $task->deadline = $_POST['deadline'];
+        $task->tags =json_encode(explode(", ",trim($_POST['tags'])));
+        $task->priority = $_POST['priority'];
+        R::store($task);
+   }
 ?>
 <body>
 <div class="navbar">
@@ -36,21 +48,21 @@
          </div>
         <div class="col-md-9">
             <div class="well well-sm">
-                <form class="form-horizontal" action="<?php echo $_SERVER['PHP_SELF']; ?> method="post">
+                <form class="form-horizontal" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
                     <fieldset>
                         <legend class="text-center header">Give Tasks</legend>
 
                         <div class="form-group">
                             <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-user bigicon"></i></span>
                             <div class="col-md-8">
-                                <input id="tname" name="taskname" type="text" placeholder="Название задачи" class="form-control">
+                                <input id="tname" name="taskname" type="text" pattern="{2,255}" placeholder="Название задачи" class="form-control" required>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <span class="col-md-1 col-md-offset-2 text-center"><i class="fa fa-pencil-square-o bigicon"></i></span>
                             <div class="col-md-8">
-                                <textarea class="form-control" id="message" name="message" placeholder="Опишите задание в подробностях" rows="5"></textarea>
+                                <textarea class="form-control"  id="message" pattern="{2,255}" name="decription" placeholder="Опишите задание в подробностях" rows="5" required></textarea>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -97,7 +109,7 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-md-12 text-center">
-                                <button type="submit" class="btn btn-primary btn-lg">Создать</button>
+                                <button type="submit" name = "create_tasks" class="btn btn-primary btn-lg">Создать</button>
                             </div>
                         </div>
                     </fieldset>
