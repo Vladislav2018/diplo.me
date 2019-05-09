@@ -1,20 +1,40 @@
 <?php
    require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
    include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
-   $ids = R::getCol('SELECT * FROM employees');
-   $groups = R::getCol('SELECT groupname FROM `groups`');
-   //b_dump($_SESSION);
-   if(isset($_POST['create_tasks']))
+   $employess = R::getAll('SELECT id, first_name, last_name FROM employees');
+   $groups = R::getAll('SELECT id, groupname FROM `groups`');
+   $all_tasks= R::getAll('SELECT * FROM tasks ORDER BY deadline limit ?',array(50));
+   //b_dump($groups);
+   //b_dump($employess);
+   $data = $_POST;
+   if(isset($_POST['create_tasks']) && !in_array($data['taskname'], $all_tasks))
    {
         $task = R::dispense('tasks');
-        $task->task_name = $_POST['taskname'];
-        $task->task_description= $_POST['decription'];
-        $task->employee_id = $_POST['empl_id'];
+        $task->task_name = $data['taskname'];
+        $task->task_description= $data['decription'];
         $task->manager_id = $_SESSION['employee']['id'];
-        $task->deadline = $_POST['deadline'];
-        $task->tags =json_encode(explode(", ",trim($_POST['tags'])));
-        $task->priority = $_POST['priority'];
+        $task->deadline = $data['deadline'];
+        $task->tags =json_encode(explode(",",trim($data['tags'])));
+        $task->priority = $data['priority'];
         R::store($task);
+        $this_task = R::findOne('tasks', ' WHERE task_name = ?', array($data['taskname']));
+        b_dump($this_task['id']);
+        if(count($data['empl_id'])>0)
+        {
+            for($i = 0; $i< count($data['empl_id']); $i++)
+            {
+                R::exec('INSERT INTO tasksemployess(employee_id, task_id) VALUES(?,?)', array($data['empl_id'][$i], $this_task['id']));
+            }
+        }
+        if(count($data['group'])>0)
+        {
+            for($i = 0; $i< count($data['group']); $i++)
+            {
+                R::exec('INSERT INTO tasksgroups(group_id, task_id) VALUES(?,?)', array($data['group'][$i], $this_task['id']));
+            }
+        }
+        unset($data);
+        unset($_POST['create_tasks']);
    }
 ?>
 <body>
@@ -48,7 +68,23 @@
          </div>
         <div class="col-md-9">
             <div class="well well-sm">
-                <form class="form-horizontal" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <?php if($_SESSION['employee']['roles'] != 'worker'):?>
+               <li class="nav-item">
+                  <a class="nav-link active" id="pills-give-tab" data-toggle="pill" href="#pills-give" role="tab" aria-controls="pills-give" aria-selected="true">Дать задачу</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" id="pills-tasks-tab" data-toggle="pill" href="#pills-tasks" role="tab" aria-controls="pills-tasks" aria-selected="false">Все задачи</a>
+               </li>
+               <?php endif;?>
+               <li class="nav-item">
+                  <a class="nav-link" id="pills-mytasks-tab" data-toggle="pill" href="#pills-mytasks" role="tab" aria-controls="pills-mytasks" aria-selected="false">Mои задачи</a>
+               </li> 
+            </ul>
+            <br>
+            <div class="tab-content" id="pills-tabContent">
+               <div class="tab-pane fade show active" id="pills-give" role="tabpanel" aria-labelledby="pills-give-tab">
+                    <form class="form-horizontal" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
                     <fieldset>
                         <legend class="text-center header">Give Tasks</legend>
 
@@ -66,24 +102,28 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                             группа, для которого будет задача:
-                                <select name="group"class="form-control">
-                                <option name='group[]' value=""></option>
-                                    <?php foreach($groups as $group): ?>
-                                    <option name='group[]' value="<?php echo $group; ?>"><?php echo $group; ?></option>
-                                    <?php endforeach; ?>
-                                </select>
+                                    <div class="form-check">
+                                        <?php foreach($groups as $group): ?>
+                                      <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" name="group[]" id="group" value="<?php echo $group['id']; ?>">
+                                        <?php echo $group['groupname']; ?>
+                                      </label>
+                                      <?php endforeach; ?>
+                                    </div>
                             </div>
-                            <div class="col-md-3">                           
-                            id сотрудника, для которой будет задача:
-                                <select name="empl_id"class="form-control">
-                                <option name='empl_id[]' value=""></option>
-                                    <?php foreach($ids as $id): ?>
-                                    <option name='empl_id[]' value="<?php echo $id; ?>"><?php echo $id; ?></option>
-                                    <?php endforeach; ?>
-                                </select>
+                            <div class="col-md-4">                           
+                            id сотрудникa, для которой будет задача:
+                            <div class="form-check">
+                                    <?php foreach($employess as $employee): ?>
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input" name="empl_id[]" id="empl" value="<?php echo $employee['id']; ?>">
+                                        <?php echo $employee['first_name'].' '.$employee['last_name']; ?>
+                                      </label>
+                                <?php endforeach; ?>
                             </div>
+                        </div>
                         </div>
                         <div class="form-group">
                             
@@ -114,6 +154,50 @@
                         </div>
                     </fieldset>
                 </form>
+               </div>
+               <div class="tab-pane fade show" id="pills-tasks" role="tabpanel" aria-labelledby="pills-tasks-tab">
+               <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+               <?php if($_SESSION['employee']['roles'] == 'admin'): ?>
+                    <table class="table table-dark table-bordered">
+                        <thead>
+                        <tr >
+                            <th>Удалить</th>
+                            <th >id</th>
+                            <th >Название задачи</th>
+                            <th >Описание задачи</th>
+                            <th >h_id</th>
+                            <th >Выполнить до:</th>
+                            <th >Описание</th>
+                            <th >приоритет</th>
+                            <th >статус</th>
+                            <th >тэги</th>
+                            <th >Сделано:</th>
+                        </tr>
+                        </thead>
+                        <tbody style="height:500px; overflow:scroll;">
+                            <?php foreach($all_tasks as $each_task):?>
+                                <tr>
+                                    <td ><input type="checkbox" name="for_delete[]" value="<?php echo $each_task['id']?>"></td>
+                                    <td ><?php echo $each_task['id'] ?></td>
+                                    <td ><?php echo $each_task['task_name'] ?></td>
+                                    <td ><?php echo $each_task['task_description'] ?></td>
+                                    <td ><?php echo $each_task['manager_id'] ?></td>
+                                    <td ><?php echo $each_task['deadline'] ?></td>
+                                    <td ><?php echo $each_task['priority'] ?></td>
+                                    <td ><?php echo $each_task['status'] ?></td>
+                                    <td ><?php echo $each_task['tags'] ?></td>
+                                    <td ><?php echo $each_task['done_at'] ?></td>
+                                </tr>
+                            <?php endforeach;?>
+                        </tbody>
+                    </table>
+               <?php endif;?>  
+               </div>
+               <div class="tab-pane fade show" id="pills-mytasks" role="tabpanel" aria-labelledby="pills-mytasks-tab">
+
+               </div>
+            </div>
+
             </div>
         </div>
     </div>
@@ -129,5 +213,10 @@
     .bigicon {
         font-size: 35px;
         color: #36A0FF;
+    }
+    tbody
+    {
+        height:500px; 
+        overflow:scroll;
     }
 </style>

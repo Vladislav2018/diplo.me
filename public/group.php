@@ -5,16 +5,23 @@
    //b_dump($_SESSION['employee']);
    if($_SESSION['employee']['roles'] != 'worker')
    {
+      //b_dump($_SESSION);
         $my_subordinates = R::findAll('employees' , 'WHERE head_id = ?', array($_SESSION['employee']['id']));
         //b_dump($my_subordinates);
         if(isset($_POST['create_group']))
         {
            b_dump($_POST);
             $new_group = R::dispense('groups');
-            $new_group->head_id = $_SESSION['employee']['head_id'];
-            $new_group->name = $_POST['group_name'];
-
-        }
+            $new_group->head_id = $_SESSION['employee']['id'];
+            $new_group->groupname = $_POST['group_name'];
+            R::store($new_group);
+            $this_group = R::findOne('groups', 'WHERE groupname = ?', array($_POST['group_name']));
+            b_dump($this_group['id']);
+            for($i = 0; $i< count($_POST['grouped']); $i++)
+            {
+               R::exec('INSERT INTO grouped(employee_id, group_id) VALUES(?,?)', array($_POST['grouped'][$i], $this_group['id']));
+            }
+          }
    }
 
 ?>
@@ -56,7 +63,6 @@
                 <th >id</th>
                 <th >first_name</th>
                 <th >last_name</th>
-                <th >Groups</th>
             </tr>
             </thead>
             <tbody style ="height: 500px; overflow: scroll;">
@@ -66,7 +72,6 @@
                         <td ><?php echo $my_subordinate['id'] ?></td>
                         <td ><?php echo $my_subordinate['first_name'] ?></td>
                         <td ><?php echo $my_subordinate['last_name'] ?></td>
-                        <td ><?php  ?></td>
                     </tr>
                   <?php endforeach;?>
             </tbody>
