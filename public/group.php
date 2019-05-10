@@ -8,7 +8,12 @@
       //b_dump($_SESSION);
         $my_subordinates = R::findAll('employees' , 'WHERE head_id = ?', array($_SESSION['employee']['id']));
         //b_dump($my_subordinates);
-        if(isset($_POST['create_group']))
+        $my_groups = R::getAll('SELECT * FROM `groups` WHERE head_id = ?', array($_SESSION['employee']['id']));
+        $participants = R::getAll('SELECT first_name, last_name FROM employees WHERE id IN 
+        (SELECT employee_id FROM grouped WHERE group_id IN
+        (SELECT id FROM `groups` WHERE head_id = ?))', array($_SESSION['employee']['id']) );
+        b_dump($participants);
+        if(isset($_POST['create_group']) && !in_multidimensional_array($_POST['group_name'], $my_groups))
         {
            b_dump($_POST);
             $new_group = R::dispense('groups');
@@ -16,7 +21,7 @@
             $new_group->groupname = $_POST['group_name'];
             R::store($new_group);
             $this_group = R::findOne('groups', 'WHERE groupname = ?', array($_POST['group_name']));
-            b_dump($this_group['id']);
+            //b_dump($this_group['id']);
             for($i = 0; $i< count($_POST['grouped']); $i++)
             {
                R::exec('INSERT INTO grouped(employee_id, group_id) VALUES(?,?)', array($_POST['grouped'][$i], $this_group['id']));
@@ -26,35 +31,10 @@
 
 ?>
 <body>
-   <div class="navbar">
-      <div class="navbar-inner">
-         <div class="container">
-            <a href='<?php echo("logout.php");?>'>Logout</a>
-         </div>
-      </div>
-   </div>
-   <div class="container">
-      <div class="row">
-         <div class="col-md-3 ">
-            <div class="list-group ">
-               <a href="<?php echo("profile.php"); ?>" class="list-group-item list-group-item-action">Профиль</a>
-               <a href="<?php echo("tasks.php"); ?>" class="list-group-item list-group-item-action">Задания</a>
-               <a href="<?php echo("group.php"); ?>" class="list-group-item list-group-item-action active">Группа</a>
-               <a href="<?php echo("my_stat.php"); ?>" class="list-group-item list-group-item-action">Моя статистика</a>
-               <?php 
-                  if($_SESSION['employee']['roles'] != 'worker'):
-                  ?>
-               <a href="<?php echo("group_stat.php"); ?>" class="list-group-item list-group-item-action">Статистика группы</a>
-               <?php endif;?>
-               <?php 
-                  if($_SESSION['employee']['roles'] == 'admin'):
-                  ?>
-               <a href="<?php echo("common_stat.php"); ?>" class="list-group-item list-group-item-action">Общая статистика</a>
-               <a href="<?php echo("all_profiles.php"); ?>" class="list-group-item list-group-item-action">Все профили</a>
-               <?php endif;?>
-            </div>
-         </div>
+<?php include_once 'navmenu.php';?>
+         
          <div class="col-md-9">
+            <?php if($_SESSION['employee']['roles'] != 'worker'): ?>
          <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
          <table class="table table-dark table-bordered">
             <thead>
@@ -88,7 +68,36 @@
                 </div>
             </div>
          </form>
+         <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+         <table class="table table-dark table-bordered">
+            <thead>
+            <tr >
+                <th >Add</th>
+                <th >id</th>
+                <th >Название</th>
+                <th> Участники </th>
+            </tr>
+            </thead>
+            <tbody style ="height: 500px; overflow: scroll;">
+                <?php foreach($my_groups as $my_group):?>
+                    <tr>
+                        <td ><input type="checkbox" name="groups[]" value="<?php echo $my_group['id']?>"></td>
+                        <td ><?php echo $my_group['id'] ?></td>
+                        <td ><?php echo $my_group['groupname'] ?></td>
+                        <td ><?php ?></td>
+                    </tr>
+                  <?php endforeach;?>
+            </tbody>
+        </table>
+            <div class="form-group row">
+                <div class="offset-4 col-8">
+                    <button name="create_group" type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+         </form>
+ <?php endif; ?>
         </div>
+                 
       </div>
    </div>
 

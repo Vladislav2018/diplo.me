@@ -1,7 +1,7 @@
 <?php
    require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
    include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
-   if(isset($_POST['find']))
+   if(isset($_POST['find']) && !empty($_POST['sought-for']))
    {
        $employees = R::find('employees' ,'WHERE '.$_POST['findby'].'= ?', array($_POST['sought-for']));
        $users = array();
@@ -12,40 +12,21 @@
        //$users = R::findAll('users' , 'WHERE id = ?', array());
        //b_dump($_POST);
    }
+   else
+   {
+    $employees = R::getAll('SELECT * FROM employees', array());
+    $users = array();
+    $employee_konts = array();
+    $employee_orgs = array();
+     $i = 0;
+   }
    if(isset($_POST['delete']))
    {
        //b_dump();
    }
 ?>
 <body>
-<div class="navbar">
-    <div class="navbar-inner">
-        <div class="container">
-            <a href='<?php echo("logout.php");?>'>Logout</a>
-        </div>
-    </div>
-</div>
-   <div class="container">
-      <div class="row">
-         <div class="col-md-3 ">
-            <div class="list-group ">
-               <a href="" class="list-group-item list-group-item-action">Профиль</a>
-               <a href="<?php echo("tasks.php"); ?>" class="list-group-item list-group-item-action ">Задания</a>
-               <a href="<?php echo("group.php"); ?>" class="list-group-item list-group-item-action">Группа</a>
-               <a href="<?php echo("my_stat.php"); ?>" class="list-group-item list-group-item-action">Моя статистика</a>
-               <?php 
-               if($_SESSION['employee']['roles'] != 'worker'):
-               ?>
-                <a href="<?php echo("group_stat.php"); ?>" class="list-group-item list-group-item-action">Статистика группы</a>
-               <?php endif;?>
-                <?php 
-               if($_SESSION['employee']['roles'] == 'admin'):
-               ?>
-               <a href="<?php echo("common_stat.php"); ?>" class="list-group-item list-group-item-action">Общая статистика</a>
-               <a href="<?php echo("all_profiles.php"); ?>" class="list-group-item list-group-item-action active">Все профили</a>
-               <?php endif;?>
-            </div>
-         </div>
+<?php include_once 'navmenu.php';?>
          <div class="col-md-9">
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
                 <div class="row">
@@ -55,14 +36,14 @@
                         <option name='findby[]' value="id">id</option>
                         <option name='findby[]' value="user_id">user_id</option>
                         <option name='findby[]' value="first_name">Имени</option>
-                        <option name='findby[]' value="last_three">Фамилии</option>
+                        <option name='findby[]' value="last_name">Фамилии</option>
                         <option name='findby[]' value="patronymic">Отчеству</option>
                         <option name='findby[]' value="roles">Роль</option>
                     </select>
                 </div>
                     <div class="col-md-6">
                         <div class="active-cyan-4 mb-4">
-                            <input class="form-control" name="sought-for" type="text" placeholder="Search" value="<?php echo $_POST["sought-for"]?>" aria-label="Search" required>
+                            <input class="form-control" name="sought-for" type="text" placeholder="Search" value="<?php if(isset($_POST["sought-for"])) echo $_POST["sought-for"];?>" aria-label="Search">
                         </div>
                     </div>
                     <div class="col-md-2">
