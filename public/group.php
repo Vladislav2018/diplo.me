@@ -28,6 +28,19 @@
             }
           }
    }
+   else
+   {
+        $my_participant = R::getAll('SELECT groupname FROM `groups` WHERE id IN
+        (SELECT group_id FROM grouped WHERE employee_id = ?)', array($_SESSION['employee']['id']));
+        $my_groupmates = R::getAll('SELECT first_name, last_name FROM employees WHERE head_id = ?'
+        , array($_SESSION['employee']['head_id']));
+        //b_dump($my_groupmates);
+        $my_manager = R::findOne('employees', 'WHERE id = ?',array($_SESSION['employee']['head_id']));
+        $manager_conts = R::findOne('employeekonts', 'WHERE employee_id = ?',array($_SESSION['employee']['head_id']));
+        $conts_columns= R::getColumns('employeekonts');
+        $conts_columns = array_keys($conts_columns);
+        //b_dump($conts_columns);
+   }
 
 ?>
 <body>
@@ -95,11 +108,29 @@
                 </div>
             </div>
          </form>
- <?php endif; ?>
+<?php else:?>
+            <div class="card bg-dark mb-3" style="max-width: 25rem;">
+            <div class="card-header">Группа</div>
+            <div class="card-body">
+                <h5 class="card-title"><?php echo'Руководитель: '.$my_manager['first_name'].' '.$my_manager['last_name'].' '.$my_manager['patronymic'] ?></h5>
+                <ul class="card-text">
+                <p>Участники:</p>
+                <?php for($i = 0; $i<count($my_groupmates); $i++): ?>
+                <li> <?php echo $my_groupmates[$i]['first_name'].' '.$my_groupmates[$i]['last_name'];?> </li>
+                <?php endfor;?>
+                </ul>
+                <p>О руководителе:</p>
+                <?php 
+                for($i = 2; $i<count($conts_columns); $i++)
+                {
+                   echo $conts_columns[$i].': '.$manager_conts[$conts_columns[$i]].'<br>';
+                }
+                 ?>
+            </div>
+            </div>
         </div>
-                 
-      </div>
-   </div>
+            <?php endif; ?>      
+
 
    
       

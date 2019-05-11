@@ -11,6 +11,7 @@ if(!R::testConnection())
 {
     exit('some error with db connection or file structure');
 }
+date_default_timezone_set("Europe/Moscow");
 DispenseHelper::setEnforceNamingPolicy(false);
 //m.b. need to cut and pastle in helper
 R::ext('normdispense', function($table_name)

@@ -1,6 +1,7 @@
 <?php
    require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
    include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+   //b_dump($_SESSION);
    $employess = R::getAll('SELECT id, first_name, last_name FROM employees');
    $groups = R::getAll('SELECT id, groupname FROM `groups`');
    $all_tasks= R::getAll('SELECT * FROM tasks ORDER BY deadline limit ?',array(50));
@@ -11,8 +12,8 @@
    (SELECT task_id FROM tasksgroups WHERE group_id IN
    (SELECT id FROM `groups` WHERE id IN
    (SELECT group_id FROM grouped WHERE employee_id = ?)))',array($_SESSION['employee']['id']));
-   b_dump($my_groups_tasks);
-
+   //b_dump($my_groups_tasks);
+    $sub_tasks = R::getAll('SELECT * FROM tasks WHERE manager_id = ?', array($_SESSION['employee']['id']));
    if(isset($_POST['create_tasks']) && !in_multidimensional_array($_POST['taskname'], $all_tasks))
    {   
         $data = $_POST;
@@ -44,6 +45,79 @@
         $_POST = array();
         $_REQUEST = array(); 
    }
+   if(isset($_POST['done']) && !empty($_POST['my_done']))
+   {
+       for($i = 0; $i< count($_POST['my_done']); $i++)
+       {
+           R::exec('UPDATE tasks SET `status` = "checking", `done_at` = ? WHERE id = ?', array(date('Y-m-d-h-m-s'), $_POST['my_done'][$i]));
+       }  
+   }
+   if(isset($_POST['in_process']) && !empty($_POST['my_done']))
+   {
+       for($i = 0; $i< count($_POST['my_done']); $i++)
+       {
+           R::exec('UPDATE tasks SET `status` = "in_process" WHERE id = ?', array($_POST['my_done'][$i]));
+       }  
+   }
+   if(isset($_POST['tasks_reject']) && !empty($_POST['for_delete']))
+   {
+       for($i = 0; $i< count($_POST['for_delete']); $i++)
+       {
+           R::exec('UPDATE tasks SET `status` = "rejected" WHERE id = ?', array($_POST['for_delete'][$i]));
+       }  
+   }
+   if(isset($_POST['tasks_remake']) && !empty($_POST['for_delete']))
+   {
+       for($i = 0; $i< count($_POST['for_delete']); $i++)
+       {
+           R::exec('UPDATE tasks SET `status` = "remake" WHERE id = ?', array($_POST['for_delete'][$i]));
+       }  
+   }
+   if(isset($_POST['tasks_delete']) && !empty($_POST['for_delete']))
+   {
+       for($i = 0; $i< count($_POST['for_delete']); $i++)
+       {
+           R::exec('DELETE FROM tasks WHERE id = ?', array($_POST['my_done'][$i]));
+       }  
+   }
+   if(isset($_POST['tasks_done']) && !empty($_POST['for_delete']) && !empty($_POST['mark']))
+   {
+        $marks = array();
+       $marks = explode(",",trim($_POST['mark']));
+       if(count($marks) == count($_POST['for_delete']))
+       {
+            for($i = 0; $i< count($_POST['for_delete']); $i++)
+            {
+                R::exec('UPDATE tasks SET `status` = "done", `mark` = ? WHERE id = ?', array($marks[$i], $_POST['for_delete'][$i]));
+            }   
+       }
+   }
+   if(isset($_POST['sub_tasks_done']) && !empty($_POST['sub_check']) && !empty($_POST['sub_mark']))
+   {
+        $marks = array();
+       $marks = explode(",",trim($_POST['sub_mark']));
+       if(count($marks) == count($_POST['sub_check']))
+       {
+            for($i = 0; $i< count($_POST['sub_check']); $i++)
+            {
+                R::exec('UPDATE tasks SET `status` = "done", `mark` = ? WHERE id = ?', array($marks[$i], $_POST['sub_check'][$i]));
+            }   
+       }
+   }
+   if(isset($_POST['sub_tasks_reject']) && !empty($_POST['sub_check']))
+   {
+       for($i = 0; $i< count($_POST['sub_check']); $i++)
+       {
+           R::exec('UPDATE tasks SET `status` = "rejected" WHERE id = ?', array($_POST['sub_check'][$i]));
+       }  
+   }
+   if(isset($_POST['sub_tasks_remake']) && !empty($_POST['sub_check']))
+   {
+       for($i = 0; $i< count($_POST['sub_check']); $i++)
+       {
+           R::exec('UPDATE tasks SET `status` = "remake" WHERE id = ?', array($_POST['sub_check'][$i]));
+       }  
+   }
 ?>
 <body>
 <?php include_once 'navmenu.php';?>
@@ -54,6 +128,11 @@
                <li class="nav-item">
                   <a class="nav-link active" id="pills-give-tab" data-toggle="pill" href="#pills-give" role="tab" aria-controls="pills-give" aria-selected="true">Дать задачу</a>
                </li>
+               <li class="nav-item">
+                  <a class="nav-link" id="pills-sub_tasks-tab" data-toggle="pill" href="#pills-sub_tasks" role="tab" aria-controls="pills-sub_tasks" aria-selected="false">Задачи подчинённых</a>
+               </li>
+               <?php endif;?>
+               <?php if($_SESSION['employee']['roles'] == 'admin'):?>
                <li class="nav-item">
                   <a class="nav-link" id="pills-tasks-tab" data-toggle="pill" href="#pills-tasks" role="tab" aria-controls="pills-tasks" aria-selected="false">Все задачи</a>
                </li>
@@ -171,10 +250,70 @@
                             <?php endforeach;?>
                         </tbody>
                     </table>
-               <?php endif;?> 
-               <div class="offset-4 col-8">
-                            <button name="delete" type="submit" class="btn btn-danger">Удалить</button> отмеченных
+                    <div class="offset-4 col-8">
+                            <button name="tasks_delete" type="submit" class="btn btn-danger">Удалить</button> отмеченные
+
+                            <button name="tasks_reject" type="submit" class="btn-outline-primary">Отменить</button>
+                            <button name="tasks_remake" type="submit" class="btn-outline-warning">Переделать</button>
+                        </div> задачи
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                <label for="mark">Оценить качество:</label>
+                                <input id="mark" name="mark" min="1" max = "100" type="number" placeholder="100" class="form-control">
+                            </div>
+                            <button name="tasks_done" type="submit" class="btn-outline-success">Выполено</button>
                         </div>
+               <?php endif;?> 
+               </form> 
+               </div>
+               <div class="tab-pane fade show" id="pills-sub_tasks" role="tabpanel" aria-labelledby="pills-sub_tasks-tab">
+               <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+               <?php if($_SESSION['employee']['roles'] != 'worker'): ?>
+                    <table class="table table-dark table-bordered">
+                        <thead>
+                        <tr >
+                            <th>Отметить</th>
+                            <th >id</th>
+                            <th >Название задачи</th>
+                            <th >Описание задачи</th>
+                            <th >h_id</th>
+                            <th >Выполнить до:</th>
+                            <th >приоритет</th>
+                            <th >статус</th>
+                            <th >тэги</th>
+                            <th >Сделано:</th>
+                        </tr>
+                        </thead>
+                        <tbody style="height:500px; overflow:scroll;">
+                            <?php foreach($sub_tasks as $sub_task):?>
+                                <tr>
+                                    <td ><input type="checkbox" name="sub_check[]" value="<?php echo $sub_task['id']?>"></td>
+                                    <td ><?php echo $sub_task['id'] ?></td>
+                                    <td ><?php echo $sub_task['task_name'] ?></td>
+                                    <td ><?php echo $sub_task['task_description'] ?></td>
+                                    <td ><?php echo $sub_task['manager_id'] ?></td>
+                                    <td ><?php echo $sub_task['deadline'] ?></td>
+                                    <td ><?php echo $sub_task['priority'] ?></td>
+                                    <td ><?php echo $sub_task['status'] ?></td>
+                                    <td ><?php echo $sub_task['tags'] ?></td>
+                                    <td ><?php echo $sub_task['done_at'] ?></td>
+                                </tr>
+                            <?php endforeach;?>
+                        </tbody>
+                    </table>
+                    <div class="offset-4 col-8">
+                            <button name="sub_tasks_reject" type="submit" class="btn-outline-primary">Отменить</button>
+                            <button name="sub_tasks_remake" type="submit" class="btn-outline-warning">Переделать</button>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                <label for="mark">Оценить качество:</label>
+                                <input id="mark" name="sub_mark" type="text" placeholder="10, 40, ..." class="form-control">
+                            </div>
+                            <button name="sub_tasks_done" type="submit" class="btn-outline-success">Выполено</button>
+                        </div>
+               <?php endif;?> 
+
                </form> 
                </div>
                 
@@ -200,7 +339,7 @@
                         <tbody style="height:500px; overflow:scroll;">
                             <?php foreach($my_tasks as $my_task):?>
                                 <tr>
-                                    <td ><input type="checkbox" name="for_delete[]" value="<?php echo $my_task['id']?>"></td>
+                                    <td ><input type="checkbox" name="my_done[]" value="<?php echo $my_task['id']?>"></td>
                                     <td ><?php echo $my_task['id'] ?></td>
                                     <td ><?php echo $my_task['task_name'] ?></td>
                                     <td ><?php echo $my_task['task_description'] ?></td>
@@ -234,7 +373,7 @@
                         <tbody style="height:500px; overflow:scroll;">
                             <?php foreach($my_groups_tasks as $my_groups_task):?>
                                 <tr>
-                                    <td ><input type="checkbox" name="for_delete[]" value="<?php echo $my_groups_task['id']?>"></td>
+                                    <td></td>
                                     <td ><?php echo $my_groups_task['id'] ?></td>
                                     <td ><?php echo $my_groups_task['task_name'] ?></td>
                                     <td ><?php echo $my_groups_task['task_description'] ?></td>
@@ -249,7 +388,9 @@
                         </tbody>
                     </table>
                <div class="offset-4 col-8">
-                            <button name="delete" type="submit" class="btn btn-access">Выполены</button> отмеченные
+                            <button name="done" type="submit" class="btn btn-success">Выполены</button>
+
+                            <button name="in_process" type="submit" class="btn btn-secondary">Взяты в работу</button> отмеченные
                         </div>
                </form> 
                </div>

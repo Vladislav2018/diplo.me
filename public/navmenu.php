@@ -27,7 +27,7 @@ function what_is($i)
                     for ($i = 0; $i < count($links) - 3; $i++)
                     echo sprintf('<a href="%s" class="list-group-item list-group-item-action %s">%s</a>', $links[$i], what_is($i), $titleForLinks[$i]);
                 }
-                if($_SESSION['employee']['roles'] == 'manager')
+                elseif($_SESSION['employee']['roles'] == 'manager')
                 {
                     for ($i = 0; $i < count($links) - 2; $i++)
                     echo sprintf('<a href="%s" class="list-group-item list-group-item-action %s">%s</a>', $links[$i], what_is($i), $titleForLinks[$i]);
