@@ -1,6 +1,7 @@
 <?php
 require '../include.php';
 include_once '../helper.php';
+checkAuth();
 $data = $_POST;
 b_dump($_SESSION);
 if ( isset($data['submit']) )

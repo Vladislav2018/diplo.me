@@ -1,6 +1,7 @@
 <?php
    require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
    include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+   checkAuth();
    //b_dump($_SESSION);
    $employess = R::getAll('SELECT id, first_name, last_name FROM employees');
    $groups = R::getAll('SELECT id, groupname FROM `groups`');
@@ -13,6 +14,10 @@
    (SELECT id FROM `groups` WHERE id IN
    (SELECT group_id FROM grouped WHERE employee_id = ?)))',array($_SESSION['employee']['id']));
    //b_dump($my_groups_tasks);
+//    for($i= 0; $i < count($all_tasks); $i++)
+//    {
+
+//    }
     $sub_tasks = R::getAll('SELECT * FROM tasks WHERE manager_id = ?', array($_SESSION['employee']['id']));
    if(isset($_POST['create_tasks']) && !in_multidimensional_array($_POST['taskname'], $all_tasks))
    {   
@@ -27,14 +32,14 @@
         R::store($task);
         $this_task = R::findOne('tasks', ' WHERE task_name = ?', array($data['taskname']));
         b_dump($this_task['id']);
-        if(count($data['empl_id'])>0)
+        if(!empty($data['empl_id']))
         {
             for($i = 0; $i< count($data['empl_id']); $i++)
             {
                 R::exec('INSERT INTO tasksemployess(employee_id, task_id) VALUES(?,?)', array($data['empl_id'][$i], $this_task['id']));
             }
         }
-        if(count($data['group'])>0)
+        if(!empty($data['group']))
         {
             for($i = 0; $i< count($data['group']); $i++)
             {
@@ -49,7 +54,7 @@
    {
        for($i = 0; $i< count($_POST['my_done']); $i++)
        {
-           R::exec('UPDATE tasks SET `status` = "checking", `done_at` = ? WHERE id = ?', array(date('Y-m-d-h-m-s'), $_POST['my_done'][$i]));
+           R::exec('UPDATE tasks SET `status` = "checking", `done_at` = NOW() WHERE id = ?', array($_POST['my_done'][$i]));
        }  
    }
    if(isset($_POST['in_process']) && !empty($_POST['my_done']))
@@ -88,7 +93,7 @@
        {
             for($i = 0; $i< count($_POST['for_delete']); $i++)
             {
-                R::exec('UPDATE tasks SET `status` = "done", `mark` = ? WHERE id = ?', array($marks[$i], $_POST['for_delete'][$i]));
+                R::exec('UPDATE tasks SET `status` = "done", `mark` = ?, `done_at` = NOW() WHERE id = ?', array($marks[$i], $_POST['for_delete'][$i]));
             }   
        }
    }
@@ -100,7 +105,7 @@
        {
             for($i = 0; $i< count($_POST['sub_check']); $i++)
             {
-                R::exec('UPDATE tasks SET `status` = "done", `mark` = ? WHERE id = ?', array($marks[$i], $_POST['sub_check'][$i]));
+                R::exec('UPDATE tasks SET `status` = "done", `mark` = ?, `done_at` = NOW() WHERE id = ?', array($marks[$i], $_POST['sub_check'][$i]));
             }   
        }
    }
@@ -259,7 +264,7 @@
                         <div class="form-group">
                             <div class="col-md-2">
                                 <label for="mark">Оценить качество:</label>
-                                <input id="mark" name="mark" min="1" max = "100" type="number" placeholder="100" class="form-control">
+                                <input id="mark" name="mark" type="text" placeholder="100, 50, 40" class="form-control">
                             </div>
                             <button name="tasks_done" type="submit" class="btn-outline-success">Выполено</button>
                         </div>

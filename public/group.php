@@ -1,6 +1,7 @@
 <?php
    require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
    include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+   checkAuth();
    //unset($)
    //b_dump($_SESSION['employee']);
    if($_SESSION['employee']['roles'] != 'worker')
@@ -9,24 +10,24 @@
         $my_subordinates = R::findAll('employees' , 'WHERE head_id = ?', array($_SESSION['employee']['id']));
         //b_dump($my_subordinates);
         $my_groups = R::getAll('SELECT * FROM `groups` WHERE head_id = ?', array($_SESSION['employee']['id']));
-        $participants = R::getAll('SELECT first_name, last_name FROM employees WHERE id IN 
-        (SELECT employee_id FROM grouped WHERE group_id IN
-        (SELECT id FROM `groups` WHERE head_id = ?))', array($_SESSION['employee']['id']) );
-        b_dump($participants);
         if(isset($_POST['create_group']) && !in_multidimensional_array($_POST['group_name'], $my_groups))
         {
-           b_dump($_POST);
+           //b_dump($_POST);
             $new_group = R::dispense('groups');
             $new_group->head_id = $_SESSION['employee']['id'];
             $new_group->groupname = $_POST['group_name'];
             R::store($new_group);
             $this_group = R::findOne('groups', 'WHERE groupname = ?', array($_POST['group_name']));
+            $group_stat = R::dispense('groupresults');
+            $group_stat->group_id = $this_group['id'];
+            $group_stat->head_id = $_SESSION['employee']['id'];
+            R::store($group_stat);
             //b_dump($this_group['id']);
             for($i = 0; $i< count($_POST['grouped']); $i++)
             {
                R::exec('INSERT INTO grouped(employee_id, group_id) VALUES(?,?)', array($_POST['grouped'][$i], $this_group['id']));
             }
-          }
+        }
    }
    else
    {
@@ -88,18 +89,18 @@
                 <th >Add</th>
                 <th >id</th>
                 <th >Название</th>
-                <th> Участники </th>
             </tr>
             </thead>
             <tbody style ="height: 500px; overflow: scroll;">
-                <?php foreach($my_groups as $my_group):?>
+                <?php for($i = 0; $i<count($my_groups); $i++):?>
                     <tr>
-                        <td ><input type="checkbox" name="groups[]" value="<?php echo $my_group['id']?>"></td>
-                        <td ><?php echo $my_group['id'] ?></td>
-                        <td ><?php echo $my_group['groupname'] ?></td>
-                        <td ><?php ?></td>
-                    </tr>
-                  <?php endforeach;?>
+                        <td ><input type="checkbox" name="groups[]" value="<?php echo $my_groups[$i]['id']?>"></td>
+                        <td ><?php echo $my_groups[$i]['id'] ?></td>
+                        <td ><?php echo $my_groups[$i]['groupname'] ?></td>
+                    </tr> 
+                    <?php endfor;?>
+                   
+                    
             </tbody>
         </table>
             <div class="form-group row">

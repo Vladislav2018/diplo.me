@@ -1,10 +1,13 @@
 <?php
    require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
    include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+   checkAuth();
+    $users = R::getAll('SELECT * FROM users', array());
+    
    if(isset($_POST['find']) && !empty($_POST['sought-for']))
    {
        $employees = R::find('employees' ,'WHERE '.$_POST['findby'].'= ?', array($_POST['sought-for']));
-       $users = array();
+
        $employee_konts = array();
        $employee_orgs = array();
         $i = 0;
@@ -15,14 +18,17 @@
    else
    {
     $employees = R::getAll('SELECT * FROM employees', array());
-    $users = array();
     $employee_konts = array();
     $employee_orgs = array();
      $i = 0;
    }
-   if(isset($_POST['delete']))
+   if(isset($_POST['delete']) && !empty($_POST['deletes']))
    {
-       //b_dump();
+       for($i = 0; $i< count($_POST['deletes']);$i++)
+        {
+            R::exec('DELETE FROM `users` WHERE id = ?', array($_POST['deletes'][$i]));
+        }
+        
    }
 ?>
 <body>
@@ -64,15 +70,14 @@
                 </tr>
                 </thead>
                 <tbody style ="height: 500px; overflow: scroll;">
-                    <?php foreach($employees as $employee):?>
+                    <?php for($i = 0; $i< count($users); $i++):?>
                         <tr>
-                        <?php $users[$i] = R::findOne('users', 'WHERE id = ?', array($employee['user_id'])); ?>
                             <td ><input type="checkbox" name="deletes[]" value="<?php echo $users[$i]['id']; ?>"></td>
                             <td ><?php echo $users[$i]['id']; ?></td>
                             <td ><?php echo $users[$i]['name']; ?></td>
                             <td ><?php echo $users[$i]['email']; ?></td>
                         </tr>
-               <?php endforeach;?>
+               <?php endfor;?>
                 </tbody>
                 </table>
                 <table class="table table-dark table-bordered">

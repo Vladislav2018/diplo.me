@@ -22,6 +22,15 @@ R::fancyDebug( TRUE );
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 session_start();
+function checkAuth()
+{
+    if($_SESSION == array() || empty($_SESSION))
+    {
+        ?><script type="text/javascript">
+        location = '/';
+        </script><?php
+    }
+}
 ?>
 <head>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
