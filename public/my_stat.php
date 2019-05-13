@@ -21,6 +21,10 @@ else
     (SELECT task_id FROM tasksemployess WHERE employee_id = ?)', array($_SESSION['employee']['id']));
     $avg_mark = R::getCol('SELECT avg(mark) FROM tasks WHERE id IN
     (SELECT task_id FROM tasksemployess WHERE employee_id = ?)', array($_SESSION['employee']['id']));
+    if($avg_mark[0] == null)
+    {
+      $avg_mark[0] = 0;
+    }
     R::exec('UPDATE persresults SET done_tasks = ?, failed_tasks = ?, process_tasks = ?, avarage_mark = ?
     WHERE employee_id = ?',array($done_tasks[0], $failed_tasks[0], $process_tasks[0], $avg_mark[0], $_SESSION['employee']['id']));
     //R::exec('UPDATE FROM persresults ');

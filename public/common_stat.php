@@ -4,6 +4,11 @@ include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
 checkAuth();
 
 $all_groups = R::getCol('SELECT group_id FROM `groupresults`', array());
+$all_workers = R::getAll('SELECT first_name, last_name, patronymic FROM employees WHERE id IN
+(SELECT employee_id FROM persresults)', array());
+
+$all_workers_stat = R::getAll('SELECT * FROM persresults', array());
+
 for($i = 0; $i < count($all_groups); $i++)
 {
     $done_tasks[$i] = R::getCol('SELECT count(*) FROM tasks WHERE `status` = "done" AND id IN

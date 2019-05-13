@@ -24,6 +24,9 @@ if ( isset($data['submit']) )
     $e_org = R::dispense('employeeorgs');
     $e_org->employee_id = $_SESSION['employees_id'];
     R::store($e_org);
+    $pers_results = R::dispense('persresults');
+    $pers_results->employee_id = $_SESSION['employees_id'];
+    R::store($pers_results);
     ?><script type="text/javascript">
     location = 'accounts.php';
     </script><?php
