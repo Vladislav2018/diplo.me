@@ -1,6 +1,6 @@
 <?php
-require 'E:\servak\OSPanel\domains\diplo.me\include.php';
-include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+require 'hidden\include.php';
+//include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
 //b_dump($_SESSION);
 $data = $_POST;
 if ( isset($data['do_login']) )
@@ -20,7 +20,7 @@ if ( isset($data['do_login']) )
             echo '<div style="color:dreen;">Вы авторизованы!<br>'; 
             //header('Location: accounts.php', true, 301);
             ?><script type="text/javascript">
-                location = 'accounts.php';
+                location = 'hidden/accounts.php';
             </script><?php
             exit();
         }else
@@ -70,7 +70,7 @@ if ( isset($data['do_login']) )
                                 <input type="submit" name="do_login" class="btn btn-info btn-md" value="Autorize me!">
                             </div>
                             <div id="register-link" class="text-right">
-                                <a href="/register-form.php" class="text-info">Register here</a>
+                                <a href="public/register-form.php" class="text-info">Register here</a>
                             </div>
                         </form>
                     </div>

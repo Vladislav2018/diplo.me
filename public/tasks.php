@@ -1,6 +1,6 @@
 <?php
-   require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
-   include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+   require $_SERVER['DOCUMENT_ROOT'].'\hidden\include.php';//file with coonection to RedBean
+   //include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
    checkAuth();
    //b_dump($_SESSION);
    $employess = R::getAll('SELECT id, first_name, last_name FROM employees');
@@ -125,7 +125,7 @@
    }
 ?>
 <body>
-<?php include_once 'navmenu.php';?>
+<?php include_once $_SERVER['DOCUMENT_ROOT'].'/components/navmenu.php';?>
         <div class="col-md-9">
             <div class="well well-sm">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">

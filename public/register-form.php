@@ -1,6 +1,5 @@
 <?php
-require 'E:\servak\OSPanel\domains\diplo.me\include.php';
-include_once '../helper.php';
+require $_SERVER['DOCUMENT_ROOT'].'\hidden\include.php';
   $data = $_POST;
   
 //если кликнули на button
@@ -62,7 +61,7 @@ if ( isset($data['do_signup']) )
 
         echo '<div style="color:dreen;">Вы успешно зарегистрированы!</div><hr>';
         ?><script type="text/javascript">
-        location = 'accounts.php';
+        location = '../hidden/accounts.php';
     </script><?php
         exit();
     }else

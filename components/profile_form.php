@@ -1,6 +1,6 @@
 <?php
    //require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
-   include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+   //include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
    $employee= R::FindOne('employees', 'WHERE user_id = ?', array($_SESSION['employee']['user_id']));
    $user = R::FindOne('users', 'WHERE id = ?', array($_SESSION['employee']['user_id']));
    //b_dump($employee['id']);

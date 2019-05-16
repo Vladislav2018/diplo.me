@@ -1,6 +1,6 @@
 <?php 
-require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
-include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+require $_SERVER['DOCUMENT_ROOT'].'\hidden\include.php';//file with coonection to RedBean
+//include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
 checkAuth();
 $employees= R::getCol('SELECT employee_id FROM persresults');
 //b_dump($employees);
@@ -32,7 +32,7 @@ else
 }
 
 ?>
-<?php include_once 'navmenu.php';?>
+<?php include_once '../components/navmenu.php';?>
 <div class="col-md-9">
 <ul class="list-group" style="max-width: 20rem;">
   <li class="list-group-item">Выполнено: <?php echo $done_tasks[0];?></li>

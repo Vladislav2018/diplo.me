@@ -1,6 +1,6 @@
 <?php
-   require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
-   include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+   require '../../hidden/include.php';//file with coonection to RedBean
+   include_once '../../hidden/helper.php';
    checkAuth();
     $users = R::getAll('SELECT * FROM users', array());
     
@@ -32,7 +32,7 @@
    }
 ?>
 <body>
-<?php include_once 'navmenu.php';?>
+<?php include_once '../../components/navmenu.php';?>
          <div class="col-md-9">
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
                 <div class="row">

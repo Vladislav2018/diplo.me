@@ -1,6 +1,6 @@
 <?php 
-require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
-include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+require '../../hidden/include.php';//file with coonection to RedBean
+//include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
 checkAuth();
 
 $current_groups = R::getCol('SELECT group_id FROM `groupresults` WHERE head_id = ?', array($_SESSION['employee']['id']));
@@ -23,7 +23,7 @@ $my_groups_stat = R::getAll('SELECT * FROM groupresults WHERE head_id =  ?', arr
 $group_names = R::getCol('SELECT groupname FROM `groups` WHERE head_id = ?', array($_SESSION['employee']['id']));
     //b_dump($group_names);
 ?>
-<?php include_once 'navmenu.php';?>
+<?php include_once '../../components/navmenu.php';?>
 <div class="col-md-9">
     <?php for($i = 0; $i< count($my_groups_stat); $i++): ?>
 <div class="col-md-3">

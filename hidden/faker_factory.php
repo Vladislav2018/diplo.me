@@ -1,6 +1,6 @@
 <?php
-require 'E:\servak\OSPanel\domains\diplo.me\include.php';
-include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+require '..\include.php';
+//include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
 function addUsers()
 {
     $permitted_chars = 'abcdefghijklmnopqrstuvwxyz'; 

@@ -1,6 +1,6 @@
 <?php
-   require 'E:\servak\OSPanel\domains\diplo.me\include.php';//file with coonection to RedBean
-   include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
+   require $_SERVER['DOCUMENT_ROOT'].'\hidden\include.php';//file with coonection to RedBean
+   //include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
    checkAuth();
    //unset($)
    //b_dump($_SESSION['employee']);
@@ -45,7 +45,7 @@
 
 ?>
 <body>
-<?php include_once 'navmenu.php';?>
+<?php include_once '../components/navmenu.php';?>
          
          <div class="col-md-9">
             <?php if($_SESSION['employee']['roles'] != 'worker'): ?>

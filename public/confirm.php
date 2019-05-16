@@ -1,9 +1,9 @@
 <?php
-require '../include.php';
-include_once '../helper.php';
+require $_SERVER['DOCUMENT_ROOT'].'\hidden\include.php';
+//include_once '../helper.php';
 checkAuth();
 $data = $_POST;
-b_dump($_SESSION);
+//b_dump($_SESSION);
 if ( isset($data['submit']) )
 {
     $employee = R::dispense('employees');
@@ -28,7 +28,7 @@ if ( isset($data['submit']) )
     $pers_results->employee_id = $_SESSION['employees_id'];
     R::store($pers_results);
     ?><script type="text/javascript">
-    location = 'accounts.php';
+    location = '../hidden/accounts.php';
     </script><?php
 }
 ?>

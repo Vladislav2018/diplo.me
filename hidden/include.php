@@ -1,8 +1,7 @@
 <?php
 use RedBeanPHP\Util\DispenseHelper;
 
-require 'libs/rb-mysql.php';
-require 'vendor/composer/autoload_psr4.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'\libs\rb-mysql.php';
 R::setup( 
 'mysql:host=127.0.0.1;
 dbname=work_pr',
@@ -18,16 +17,16 @@ R::ext('normdispense', function($table_name)
 {
     return R::getRedBean()->dispense($table_name);
 });
-R::fancyDebug( TRUE );
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+//R::fancyDebug( TRUE );
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
 session_start();
 function checkAuth()
 {
     if($_SESSION == array() || empty($_SESSION))
     {
         ?><script type="text/javascript">
-        location = '/';
+        location = '../../index.php';
         </script><?php
     }
 }
