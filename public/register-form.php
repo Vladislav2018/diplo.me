@@ -1,5 +1,5 @@
 <?php
-require $_SERVER['DOCUMENT_ROOT'].'\hidden\include.php';
+require $_SERVER['DOCUMENT_ROOT'].'/hidden/include.php';
   $data = $_POST;
   
 //если кликнули на button
@@ -22,7 +22,7 @@ if ( isset($data['do_signup']) )
     {
         $errors[] = 'Введите пароль';
     }
-    if(strlen(trim( $data['password']))<4)
+    if(strlen(trim( $data['password']))<10)
     {
         $errors[] = 'Пароль слишком короткий';
     }

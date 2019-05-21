@@ -1,5 +1,5 @@
 <?php
-require 'hidden\include.php';
+require 'hidden/include.php';
 //include_once 'E:\servak\OSPanel\domains\diplo.me\helper.php';
 //b_dump($_SESSION);
 $data = $_POST;

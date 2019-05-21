@@ -1,7 +1,7 @@
 <?php
 use RedBeanPHP\Util\DispenseHelper;
 
-require_once $_SERVER['DOCUMENT_ROOT'].'\libs\rb-mysql.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/libs/rb-mysql.php';
 R::setup( 
 'mysql:host=127.0.0.1;
 dbname=work_pr',
